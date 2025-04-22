@@ -1,27 +1,10 @@
 import os
 import streamlit as st
 import pandas as pd
-import openai
 from core import process_documents
-
-# Настройки страницы
-st.set_page_config(page_title="AI-сервис подбора оборудования", layout="wide")
-
-st.title("🛠️ AI-сервис подбора оборудования")
-st.markdown("Загрузите техническое задание, прайсы и (опционально) файл со скидками — система всё сделает сама.")
-
-# Загрузка файлов
-uploaded_spec = st.file_uploader("📄 Техническое задание (PDF)", type=["pdf"])
-uploaded_prices = st.file_uploader("📊 Прайсы поставщиков (XLSX)", type=["xlsx"], accept_multiple_files=True)
-uploaded_discounts = st.file_uploader("💸 Скидки от поставщиков (XLSX, по желанию)", type=["xlsx"])
-
-# Получение ключа OpenAI
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-
-# GPT-помощник
-import openai
 from openai import OpenAI
 
+# Настройка GPT-клиента
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 def ask_gpt(prompt):
@@ -36,7 +19,17 @@ def ask_gpt(prompt):
         return response.choices[0].message.content.strip()
     except Exception as e:
         return f"Ошибка обращения к GPT: {e}"
-# Раздел с GPT
+
+# Интерфейс Streamlit
+st.set_page_config(page_title="AI-сервис подбора оборудования", layout="wide")
+
+st.title("🛠️ AI-сервис подбора оборудования")
+st.markdown("Загрузите техническое задание, прайсы и (опционально) файл со скидками — система всё сделает сама.")
+
+uploaded_spec = st.file_uploader("📄 Техническое задание (PDF)", type=["pdf"])
+uploaded_prices = st.file_uploader("📊 Прайсы поставщиков (XLSX)", type=["xlsx"], accept_multiple_files=True)
+uploaded_discounts = st.file_uploader("💸 Скидки от поставщиков (XLSX, по желанию)", type=["xlsx"])
+
 st.markdown("---")
 st.subheader("🤖 Помощь от GPT")
 gpt_input = st.text_area("Задай вопрос по ТЗ или товару (например: 'что такое рельефная модель моллюска?')")
@@ -46,7 +39,6 @@ if st.button("🧠 Получить ответ от ИИ") and gpt_input:
         st.success("GPT ответил:")
         st.markdown(f"> {gpt_result}")
 
-# Раздел запуска подбора
 st.markdown("---")
 st.subheader("📥 Загрузка и подбор")
 if st.button("🚀 Запустить подбор"):
