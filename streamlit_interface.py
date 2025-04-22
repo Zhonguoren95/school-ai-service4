@@ -19,9 +19,14 @@ uploaded_discounts = st.file_uploader("💸 Скидки от поставщик
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # GPT-помощник
+import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
 def ask_gpt(prompt):
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "Ты помощник по интерпретации технических заданий на закупку оборудования для школ и садов."},
@@ -31,7 +36,6 @@ def ask_gpt(prompt):
         return response.choices[0].message.content.strip()
     except Exception as e:
         return f"Ошибка обращения к GPT: {e}"
-
 # Раздел с GPT
 st.markdown("---")
 st.subheader("🤖 Помощь от GPT")
