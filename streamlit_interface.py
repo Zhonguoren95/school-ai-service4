@@ -10,7 +10,7 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 def ask_gpt(prompt):
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Ты помощник по интерпретации технических заданий на закупку оборудования для школ и садов."},
                 {"role": "user", "content": prompt}
